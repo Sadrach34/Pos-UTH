@@ -165,40 +165,21 @@ function buscarProductoPorCodigo(evento) {
   }
 }
 
-// Función para filtrar productos por rango de precio
-function filtrarPorPrecio(precioMin, precioMax) {
-  return productos.filter(
-    (producto) => producto[2] >= precioMin && producto[2] <= precioMax
-  );
-}
-
-// Función para obtener el total actual
-function obtenerTotal() {
-  return totalProductos;
-}
-
-// Función para limpiar el total
-function limpiarTotal() {
-  totalProductos = 0;
-  const elementoTotal = document.getElementById("total");
-  if (elementoTotal) {
-    elementoTotal.innerHTML = `Total: $0.00`;
+// Función para actualizar el precio total en la interfaz
+function actualizarPrecioTotal() {
+  // Buscar tanto el elemento precio-total como total para mayor compatibilidad
+  let elementoTotal = document.getElementById("precio-total");
+  if (!elementoTotal) {
+    elementoTotal = document.getElementById("total");
   }
-}
 
-// Función para actualizar la visualización del total
-function actualizarVisualizacionTotal() {
-  const elementoTotal = document.getElementById("total");
   if (elementoTotal) {
-    elementoTotal.innerHTML = `Total: $${totalProductos.toFixed(2)}`;
+    elementoTotal.innerHTML = `$${totalProductos.toFixed(2)}`;
   }
-}
 
-// Función para mostrar los productos
-function mostrarProductos() {
-  console.log("Código | Nombre | Precio");
-  console.log("-".repeat(50));
-  productos.forEach((producto) => {
-    console.log(`${producto[0]} | ${producto[1]} | $${producto[2]}`);
-  });
+  // También actualizar cualquier elemento con clase total-amount
+  const elementosTotal = document.getElementsByClassName("total-amount");
+  for (let i = 0; i < elementosTotal.length; i++) {
+    elementosTotal[i].innerHTML = `$${totalProductos.toFixed(2)}`;
+  }
 }
