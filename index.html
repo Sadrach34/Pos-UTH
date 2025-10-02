@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="css/styles.css" />
+    <title>Punto de Venta</title>
+  </head>
+  <body>
+    <!-- Imagen en la esquina superior izquierda-->
+    <img class="logo-izquierdo" src="img/aciduladito.webp" alt="" />
+    <!-- definimos titulo-->
+    <div class="encabezado-principal">
+      <div>
+        <h1 class="texto-titulo">
+          Don Baraton dueño del abarraton del pueblon
+        </h1>
+        <h2 class="texto-subtitulo">Mas barato y me robas</h2>
+      </div>
+    </div>
+    <!-- Imagen en la esquina superior derecha-->
+    <img class="logo-derecho" src="img/images.jpg" alt="" />
+    <!--- Se debe visualizar una tabla donde se listaran los productor--->
+    <div class="contenedor-inventario">
+      <table id="lista-productos">
+        <tr>
+          <th>Cantidad</th>
+          <th>Producto</th>
+          <th>Precio</th>
+          <th>Total</th>
+        </tr>
+        <tbody id="cuerpo-datos">
+          <!-- Aqui se listan los productos-->
+        </tbody>
+      </table>
+    </div>
+    <!-- Input para introducir codigo -->
+    <input
+      id="entrada-codigo"
+      class="campo-codigo"
+      type="text"
+      placeholder="Introduzca su codigo"
+    />
+    <!--- 5 botones con imagen --->
+    <div class="panel-controles">
+      <input type="button" id="btn1" class="control-accion" />
+      <input type="button" id="btn2" class="control-accion" />
+      <input type="button" id="btn3" class="control-accion" />
+      <input type="button" id="btn4" class="control-accion" />
+      <input type="button" id="btn5" class="control-accion" />
+    </div>
+
+    <!-- Total -->
+    <div class="total-container">
+      <span id="total-amount" class="total-amount">$0.00</span>
+    </div>
+  </body>
+</html>

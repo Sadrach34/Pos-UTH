@@ -1,0 +1,138 @@
+th,
+h1,
+h2,
+tbody,
+td,
+tr {
+  font-family: sans-serif; /* Aplica una tipografía sin serifa genérica a estos elementos */
+}
+
+.encabezado-principal {
+  text-align: center; /* Alinea el texto al centro del contenedor */
+  align-items: center; /* Alinea el contenido verticalmente en el centro del flexbox */
+  display: flex; /* Transforma el contenedor en un elemento flexible */
+  justify-content: space-around; /* Reparte los elementos con espaciado equitativo alrededor */
+}
+
+.texto-titulo {
+  margin: 0; /* Remueve los márgenes exteriores del título */
+}
+
+.texto-subtitulo {
+  margin: 0; /* Remueve los márgenes exteriores del subtítulo */
+}
+
+.logo-izquierdo {
+  width: 100%; /* Define que la imagen utilice todo el ancho disponible del contenedor */
+  max-width: 68px; /* Limita el ancho máximo a 68 píxeles */
+  height: auto; /* Calcula la altura de forma automática preservando las proporciones */
+  margin-right: 20px; /* Añade 20px de espacio exterior a la derecha */
+  position: absolute; /* Ubica la imagen con posicionamiento absoluto respecto al elemento padre */
+  left: 0; /* Sitúa la imagen en el extremo izquierdo */
+  top: 0; /* Sitúa la imagen en el extremo superior */
+}
+
+.logo-derecho {
+  width: 100%; /* Define que la imagen utilice todo el ancho disponible del contenedor */
+  max-width: 68px; /* Limita el ancho máximo a 68 píxeles */
+  height: auto; /* Calcula la altura de forma automática preservando las proporciones */
+  margin-left: 20px; /* Añade 20px de espacio exterior a la izquierda */
+  right: 0; /* Sitúa la imagen en el extremo derecho */
+  top: 0; /* Sitúa la imagen en el extremo superior */
+  position: absolute; /* Ubica la imagen con posicionamiento absoluto respecto al elemento padre */
+}
+
+.contenedor-inventario {
+  font-size: x-large; /* Incrementa el tamaño del texto */
+  height: 60vh; /* Establece la altura equivalente al 60% del viewport */
+  max-height: 60vh; /* Impide que exceda el 60% de la altura de la ventana */
+  overflow-y: auto; /* Habilita desplazamiento vertical cuando el contenido desborda */
+  border: 1px solid black; /* Aplica un contorno negro sólido de 1px */
+  padding: 5px; /* Incorpora 5px de relleno interior */
+}
+
+#lista-productos {
+  max-height: 50%; /* Restringe la altura máxima al 50% del elemento contenedor */
+  width: 100%; /* Define que la tabla utilice todo el ancho disponible */
+  font-size: larger; /* Incrementa moderadamente el tamaño de la tipografía */
+}
+
+#cuerpo-datos {
+  max-height: 10%; /* Restringe la altura máxima al 10% del elemento contenedor */
+  width: 100%; /* Utiliza el 100% del ancho disponible */
+  font-size: larger; /* Incrementa moderadamente el tamaño de la tipografía */
+}
+
+.campo-codigo {
+  font-size: xx-large; /* Tipografía de tamaño extra grande para el texto del campo de entrada */
+  width: calc(
+    99% - 8px
+  ); /* Computa el ancho para abarcar prácticamente todo el contenedor descontando 8px */
+  padding: 10px; /* Incorpora 10px de relleno interior */
+  height: 50px; /* Establece una altura constante de 50px */
+}
+
+.panel-controles {
+  display: flex; /* Transforma el contenedor en un elemento flexible */
+  align-items: center; /* Alinea los elementos verticalmente en el centro del flexbox */
+}
+
+.control-accion {
+    height: 15vh;
+    width: 20vh;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    cursor: pointer;
+}
+
+#btn1 {
+  background-image: url("../img/banco.png"); /* Establece la imagen de fondo específica para el botón */
+  background-size: 70%; /* Ajusta el tamaño de la imagen de fondo al 70% del botón */
+  background-position: center; /* Establece el color de fondo como transparente */
+  background-repeat: no-repeat; /* Impide la repetición de la imagen de fondo */
+  padding: 10px; /* Añade espacio interior al botón */
+}
+
+#btn2 {
+  background-image: url("../img/Carrito.png"); /* Establece la imagen de fondo específica para el botón */
+  background-size: 70%; /* Ajusta el tamaño de la imagen de fondo al 70% del botón */
+  background-position: center; /* Establece el color de fondo como transparente */
+  background-repeat: no-repeat; /* Impide la repetición de la imagen de fondo */
+  padding: 10px; /* Añade espacio interior al botón */
+}
+
+#btn3 {
+  background-image: url("../img/nuevo.png"); /* Establece la imagen de fondo específica para el botón */
+  background-size: 70%; /* Ajusta el tamaño de la imagen de fondo al 70% del botón */
+  background-position: center; /* Establece el color de fondo como transparente */
+  background-repeat: no-repeat; /* Impide la repetición de la imagen de fondo */
+  padding: 10px; /* Añade espacio interior al botón */
+}
+
+#btn4 {
+  background-image: url("../img/SALE.png"); /* Establece la imagen de fondo específica para el botón */
+  background-size: 70%; /* Ajusta el tamaño de la imagen de fondo al 70% del botón */
+  background-position: center; /* Establece el color de fondo como transparente */
+  background-repeat: no-repeat; /* Impide la repetición de la imagen de fondo */
+  padding: 10px; /* Añade espacio interior al botón */
+}
+
+#btn5 {
+  background-image: url("../img/tarjeta.png"); /* Establece la imagen de fondo específica para el botón */
+  background-size: 70%; /* Ajusta el tamaño de la imagen de fondo al 70% del botón */
+  background-position: center; /* Establece el color de fondo como transparente */
+  background-repeat: no-repeat; /* Impide la repetición de la imagen de fondo */
+  padding: 10px; /* Añade espacio interior al botón */
+}
+
+.total-container{
+  display: flex;
+  border:2px solid black;
+  width: 30%;
+  height: 3dvw;
+  margin-left: auto;
+  font-size: xx-large;
+  align-items: center;
+  justify-content: center;
+}
