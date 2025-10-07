@@ -165,7 +165,7 @@ function buscarProductoPorCodigo(evento) {
   }
 
   // Identificamos la tecla esc, la cual elimina el último producto agregado
-  else if (evento.key === "Escape") {
+  else if (evento.key === "Delete") {
     const tabla = document.getElementById("cuerpo-datos");
     if (tabla.rows.length > 0) {
       const ultimaFila = tabla.rows[tabla.rows.length - 1];
@@ -183,7 +183,7 @@ function buscarProductoPorCodigo(evento) {
   }
 
   // tab repite el último código ingresado
-  else if (evento.key === "Tab") {
+  else if (evento.key === "+") {
     evento.preventDefault(); // Prevenir el comportamiento por defecto del tab
     const tabla = document.getElementById("cuerpo-datos");
     if (tabla.rows.length > 0) {
