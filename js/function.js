@@ -163,23 +163,41 @@ function buscarProductoPorCodigo(evento) {
       }
     }
   }
-}
 
-// Función para actualizar el precio total en la interfaz
-function actualizarPrecioTotal() {
-  // Buscar tanto el elemento precio-total como total para mayor compatibilidad
-  let elementoTotal = document.getElementById("precio-total");
-  if (!elementoTotal) {
-    elementoTotal = document.getElementById("total");
+  // Identificamos la tecla esc, la cual elimina el último producto agregado
+  else if (evento.key === "Escape") {
+    const tabla = document.getElementById("cuerpo-datos");
+    if (tabla.rows.length > 0) {
+      const ultimaFila = tabla.rows[tabla.rows.length - 1];
+      const totalCelda = ultimaFila.cells[3].innerText;
+      const totalValor = parseFloat(totalCelda.replace("$", ""));
+      totalProductos -= totalValor;
+      tabla.deleteRow(tabla.rows.length - 1);
+
+      // Actualizar la visualización del total
+      const elementoTotal = document.getElementById("total");
+      if (elementoTotal) {
+        elementoTotal.innerHTML = `Total: $${totalProductos.toFixed(2)}`;
+      }
+    }
   }
 
-  if (elementoTotal) {
-    elementoTotal.innerHTML = `$${totalProductos.toFixed(2)}`;
-  }
+  // Función para actualizar el precio total en la interfaz
+  function actualizarPrecioTotal() {
+    // Buscar tanto el elemento precio-total como total para mayor compatibilidad
+    let elementoTotal = document.getElementById("precio-total");
+    if (!elementoTotal) {
+      elementoTotal = document.getElementById("total");
+    }
 
-  // También actualizar cualquier elemento con clase total-amount
-  const elementosTotal = document.getElementsByClassName("total-amount");
-  for (let i = 0; i < elementosTotal.length; i++) {
-    elementosTotal[i].innerHTML = `$${totalProductos.toFixed(2)}`;
+    if (elementoTotal) {
+      elementoTotal.innerHTML = `$${totalProductos.toFixed(2)}`;
+    }
+
+    // También actualizar cualquier elemento con clase total-amount
+    const elementosTotal = document.getElementsByClassName("total-amount");
+    for (let i = 0; i < elementosTotal.length; i++) {
+      elementosTotal[i].innerHTML = `$${totalProductos.toFixed(2)}`;
+    }
   }
 }
