@@ -169,12 +169,12 @@ tr {
    ============================================ */
 /* Muestra el total acumulado de los productos en el carrito */
 .total-container {
-  display: flex;
-  border: 2px solid black;
-  width: 30%;
-  height: 3dvw;
-  margin-left: auto;
-  font-size: x-large;
-  align-items: center;
-  justify-content: center;
+  display: flex; /* Establece un contenedor flexible */
+  border: 2px solid black; /* Aplica un borde negro de 2px */
+  width: 30%; /* Establece el ancho del contenedor */
+  height: 3dvw; /* Establece la altura del contenedor */
+  margin-left: auto; /* Aplica un margen izquierdo automático */
+  font-size: x-large; /* Establece el tamaño de fuente como x-large */
+  align-items: center; /* Centra los elementos en el eje vertical */
+  justify-content: center; /* Centra los elementos en el eje horizontal */
 }
