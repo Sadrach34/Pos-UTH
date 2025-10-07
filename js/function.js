@@ -182,6 +182,51 @@ function buscarProductoPorCodigo(evento) {
     }
   }
 
+  // tab repite el último código ingresado
+  else if (evento.key === "Tab") {
+    evento.preventDefault(); // Prevenir el comportamiento por defecto del tab
+    const tabla = document.getElementById("cuerpo-datos");
+    if (tabla.rows.length > 0) {
+      const ultimaFila = tabla.rows[tabla.rows.length - 1];
+      const codigoUltimoProducto = ultimaFila.cells[1].innerText;
+      for (let i = 0; i < productos.length; i++) {
+        if (productos[i][1] === codigoUltimoProducto) {
+          const renglon = tabla.insertRow();
+          const celdaCantidad = renglon.insertCell(0);
+          const celdaNombre = renglon.insertCell(1);
+          const celdaPrecio = renglon.insertCell(2);
+          const celdaTotal = renglon.insertCell(3);
+
+          // Aplicar estilos
+          celdaCantidad.setAttribute("style", "text-align: center;");
+          celdaNombre.setAttribute("style", "text-align: center;");
+          celdaPrecio.setAttribute("style", "text-align: center;");
+          celdaTotal.setAttribute("style", "text-align: center;");
+
+          // Calcular el subtotal del producto
+          const subtotal = productos[i][2] * 1;
+
+          // Llenar las celdas
+          celdaCantidad.innerHTML = 1;
+          celdaNombre.innerHTML = productos[i][1];
+          celdaPrecio.innerHTML = `$${productos[i][2]}`;
+          celdaTotal.innerHTML = `$${subtotal.toFixed(2)}`;
+
+          // Agregar al total general
+          totalProductos += subtotal;
+
+          // Actualizar la visualización del total
+          const elementoTotal = document.getElementById("total");
+          if (elementoTotal) {
+            elementoTotal.innerHTML = `Total: $${totalProductos.toFixed(2)}`;
+          }
+
+          break; // Salir del bucle una vez que se encuentra el producto
+        }
+      }
+    }
+  }
+
   // Función para actualizar el precio total en la interfaz
   function actualizarPrecioTotal() {
     // Buscar tanto el elemento precio-total como total para mayor compatibilidad
