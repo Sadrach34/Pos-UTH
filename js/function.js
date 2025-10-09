@@ -102,9 +102,53 @@ const productos = [
   ["100", "Mini Refrigerador", 149.99],
 ];
 
-// Función para buscar producto por código
-// Variable para mantener el total de productos
+// Variables globales
 let totalProductos = 0;
+let modalAbierto = false;
+
+// Cuando se carga la página, configurar eventos globales
+document.addEventListener("DOMContentLoaded", function () {
+  // Escuchar eventos de teclado en todo el documento
+  document.addEventListener("keydown", manejarEventoGlobal);
+
+  // Auto-enfocar el input al cargar
+  const inputCodigo = document.getElementById("entrada-codigo");
+  if (inputCodigo) {
+    inputCodigo.focus();
+  }
+});
+
+// Esta función maneja todos los eventos de teclado en la página
+function manejarEventoGlobal(evento) {
+  // Si hay un modal abierto, solo manejar eventos dentro del modal
+  if (modalAbierto && evento.target.id !== "input-clave") {
+    return;
+  }
+
+  // Si el usuario está escribiendo en un input de password (modal), no interferir
+  if (evento.target.type === "password") {
+    return;
+  }
+
+  // Números y letras (excepto teclas especiales) - auto-enfocar input
+  if (
+    evento.key.length === 1 &&
+    !evento.ctrlKey &&
+    !evento.altKey &&
+    !evento.metaKey
+  ) {
+    const inputCodigo = document.getElementById("entrada-codigo");
+
+    // Si no está enfocado el input, enfocarlo y permitir que se escriba
+    if (document.activeElement !== inputCodigo) {
+      inputCodigo.focus();
+      // No prevenir el evento para que el carácter se escriba
+    }
+  }
+
+  // Llamar a la función principal de manejo de productos
+  buscarProductoPorCodigo(evento);
+}
 
 // Función para buscar producto por código
 function buscarProductoPorCodigo(evento) {
@@ -227,22 +271,173 @@ function buscarProductoPorCodigo(evento) {
     }
   }
 
-  // Función para actualizar el precio total en la interfaz
-  function actualizarPrecioTotal() {
-    // Buscar tanto el elemento precio-total como total para mayor compatibilidad
-    let elementoTotal = document.getElementById("precio-total");
-    if (!elementoTotal) {
-      elementoTotal = document.getElementById("total");
+  // Al presionar la tecla C se cancela la venta, se abre un prompt peguntando la clave 12345 y después muestra ventana de confirmación.
+  else if (evento.key === "c" || evento.key === "C") {
+    evento.preventDefault(); // Prevenir el comportamiento por defecto del tab
+
+    // Verificar que no haya un modal ya abierto
+    if (modalAbierto) {
+      return;
     }
 
-    if (elementoTotal) {
-      elementoTotal.innerHTML = `$${totalProductos.toFixed(2)}`;
+    // Verificar que haya productos en la tabla
+    const tabla = document.getElementById("cuerpo-datos");
+    if (tabla.rows.length === 0) {
+      alert("No hay productos para cancelar.");
+      return;
     }
 
-    // También actualizar cualquier elemento con clase total-amount
-    const elementosTotal = document.getElementsByClassName("total-amount");
-    for (let i = 0; i < elementosTotal.length; i++) {
-      elementosTotal[i].innerHTML = `$${totalProductos.toFixed(2)}`;
+    // Marcar que hay un modal abierto
+    modalAbierto = true;
+
+    const modal = crearModalContrasena();
+    document.body.appendChild(modal);
+
+    // Enfocar el campo de entrada
+    const inputClave = document.getElementById("input-clave");
+    inputClave.focus();
+  }
+}
+
+// Función para actualizar el precio total en la interfaz
+function actualizarPrecioTotal() {
+  // Buscar tanto el elemento precio-total como total para mayor compatibilidad
+  let elementoTotal = document.getElementById("precio-total");
+  if (!elementoTotal) {
+    elementoTotal = document.getElementById("total");
+  }
+
+  if (elementoTotal) {
+    elementoTotal.innerHTML = `$${totalProductos.toFixed(2)}`;
+  }
+
+  // También actualizar cualquier elemento con clase total-amount
+  const elementosTotal = document.getElementsByClassName("total-amount");
+  for (let i = 0; i < elementosTotal.length; i++) {
+    elementosTotal[i].innerHTML = `$${totalProductos.toFixed(2)}`;
+  }
+}
+// Función para crear un modal de entrada de contraseña
+function crearModalContrasena() {
+  const modal = document.createElement("div");
+  modal.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  `;
+
+  const contenido = document.createElement("div");
+  contenido.style.cssText = `
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  `;
+
+  contenido.innerHTML = `
+    <h2>Cancelar Venta</h2>
+    <p>Ingrese la clave para cancelar la venta:</p>
+    <input type="password" id="input-clave" style="
+      font-size: 20px;
+      padding: 10px;
+      width: 200px;
+      border: 2px solid #ccc;
+      border-radius: 5px;
+      text-align: center;
+      letter-spacing: 5px;
+    " maxlength="10" />
+    <br><br>
+    <button id="btn-confirmar" style="
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-right: 10px;
+    ">Confirmar</button>
+    <button id="btn-cancelar" style="
+      background-color: #f44336;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    ">Cancelar</button>
+  `;
+
+  modal.appendChild(contenido);
+
+  // Función para cerrar el modal
+  function cerrarModal() {
+    if (document.body.contains(modal)) {
+      document.body.removeChild(modal);
     }
+    modalAbierto = false; // Marcar que el modal está cerrado
+  }
+
+  // Manejar el botón de confirmar
+  contenido.querySelector("#btn-confirmar").onclick = function () {
+    const clave = document.getElementById("input-clave").value;
+    validarYCancelarVenta(clave);
+    cerrarModal();
+  };
+
+  // Manejar el botón de cancelar
+  contenido.querySelector("#btn-cancelar").onclick = function () {
+    cerrarModal();
+  };
+
+  // Permitir confirmar con Enter
+  contenido.querySelector("#input-clave").onkeypress = function (e) {
+    if (e.key === "Enter") {
+      const clave = document.getElementById("input-clave").value;
+      validarYCancelarVenta(clave);
+      cerrarModal();
+    }
+  };
+
+  // Permitir cerrar con Escape
+  modal.onkeydown = function (e) {
+    if (e.key === "Escape") {
+      cerrarModal();
+    }
+  };
+
+  return modal;
+}
+
+// Función para validar la clave y cancelar la venta
+function validarYCancelarVenta(clave) {
+  if (clave === "12345") {
+    const confirmacion = confirm(
+      "¿Está seguro de que desea cancelar la venta?"
+    );
+    if (confirmacion) {
+      // Limpiar la tabla de productos
+      const tabla = document.getElementById("cuerpo-datos");
+      while (tabla.rows.length > 0) {
+        tabla.deleteRow(0);
+      }
+      // Resetear el total
+      totalProductos = 0;
+      const elementoTotal = document.getElementById("total");
+      if (elementoTotal) {
+        elementoTotal.innerHTML = `Total: $${totalProductos.toFixed(2)}`;
+      }
+      alert("Venta cancelada.");
+    }
+  } else if (clave !== "") {
+    alert("Clave incorrecta. No se pudo cancelar la venta.");
   }
 }
