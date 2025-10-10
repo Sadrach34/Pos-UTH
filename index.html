@@ -8,19 +8,20 @@
     <title>Punto de Venta</title>
   </head>
   <body>
-    <!-- Imagen en la esquina superior izquierda-->
-    <img class="logo-izquierdo" src="img/aciduladito.webp" alt="" />
-    <!-- definimos titulo-->
+    <!-- Encabezado con logos y título-->
     <div class="encabezado-principal">
+      <!-- Imagen izquierda-->
+      <img class="logo-izquierdo" src="img/aciduladito.webp" alt="" />
+      <!-- Titulo central-->
       <div>
         <h1 class="texto-titulo">
           Don Baraton dueño del abarraton del pueblon
         </h1>
         <h2 class="texto-subtitulo">Mas barato y me robas</h2>
       </div>
+      <!-- Imagen derecha-->
+      <img class="logo-derecho" src="img/images.jpg" alt="" />
     </div>
-    <!-- Imagen en la esquina superior derecha-->
-    <img class="logo-derecho" src="img/images.jpg" alt="" />
     <!--- Se debe visualizar una tabla donde se listaran los productor--->
     <div class="contenedor-inventario">
       <table id="lista-productos">
@@ -43,18 +44,18 @@
       autofocus
       placeholder="Introduzca su codigo"
     />
-    <!--- 5 botones con imagen --->
+    <!--- 5 botones con imagen y total --->
     <div class="panel-controles">
       <input type="button" id="btn1" class="control-accion" />
       <input type="button" id="btn2" class="control-accion" />
       <input type="button" id="btn3" class="control-accion" />
       <input type="button" id="btn4" class="control-accion" />
       <input type="button" id="btn5" class="control-accion" />
-    </div>
 
-    <!-- Total -->
-    <div class="total-container">
-      <span id="total" class="total-amount">$0.00</span>
+      <!-- Total -->
+      <div class="total-container">
+        <span id="total" class="total-amount">$0.00</span>
+      </div>
     </div>
   </body>
 </html>

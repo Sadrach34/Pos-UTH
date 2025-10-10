@@ -1,6 +1,19 @@
 /* ============================================
-   ESTILOS TIPOGRÁFICOS GENERALES
+   ESTILOS GLOBALES Y TIPOGRÁFICOS
    ============================================ */
+/* Reset y configuración base del body */
+body {
+  margin: 0;
+  padding: 10px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  height: 100vh;
+  overflow: hidden;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
 /* Establece la fuente sans-serif para elementos de tabla y encabezados */
 th,
 h1,
@@ -8,7 +21,7 @@ h2,
 tbody,
 td,
 tr {
-  font-family: sans-serif; /* Aplica una tipografía sin serifa genérica a estos elementos */
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
 /* ============================================
@@ -16,45 +29,78 @@ tr {
    ============================================ */
 /* Contenedor principal del header con logos y título centrado */
 .encabezado-principal {
-  text-align: center; /* Alinea el texto al centro del contenedor */
-  align-items: center; /* Alinea el contenido verticalmente en el centro del flexbox */
-  display: flex; /* Transforma el contenedor en un elemento flexible */
-  justify-content: space-around; /* Reparte los elementos con espaciado equitativo alrededor */
+  text-align: center;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  background: linear-gradient(145deg, #ffffff, #f0f0f0);
+  padding: 15px 20px;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  margin: 0 auto 10px auto;
+  max-width: 98%;
+  position: relative;
+  flex-shrink: 0;
 }
 
 /* Remueve márgenes del título principal para control preciso del espaciado */
 .texto-titulo {
-  margin: 0; /* Remueve los márgenes exteriores del título */
+  margin: 0;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-size: 1.8em;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* Remueve márgenes del subtítulo para control preciso del espaciado */
 .texto-subtitulo {
-  margin: 0; /* Remueve los márgenes exteriores del subtítulo */
+  margin: 5px 0 0 0;
+  color: #555;
+  font-size: 1em;
+  font-weight: 500;
+  font-style: italic;
 }
 
 /* ============================================
    LOGOS DEL ENCABEZADO
    ============================================ */
-/* Logo posicionado en la esquina superior izquierda del encabezado */
+/* Logo posicionado a la izquierda del título */
 .logo-izquierdo {
-  width: 100%; /* Define que la imagen utilice todo el ancho disponible del contenedor */
-  max-width: 68px; /* Limita el ancho máximo a 68 píxeles */
-  height: auto; /* Calcula la altura de forma automática preservando las proporciones */
-  margin-right: 20px; /* Añade 20px de espacio exterior a la derecha */
-  position: absolute; /* Ubica la imagen con posicionamiento absoluto respecto al elemento padre */
-  left: 0; /* Sitúa la imagen en el extremo izquierdo */
-  top: 0; /* Sitúa la imagen en el extremo superior */
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 3px solid #fff;
+  object-fit: cover;
+  flex-shrink: 0;
 }
 
-/* Logo posicionado en la esquina superior derecha del encabezado */
+.logo-izquierdo:hover {
+  transform: scale(1.1) rotate(5deg);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+}
+
+/* Logo posicionado a la derecha del título */
 .logo-derecho {
-  width: 100%; /* Define que la imagen utilice todo el ancho disponible del contenedor */
-  max-width: 68px; /* Limita el ancho máximo a 68 píxeles */
-  height: auto; /* Calcula la altura de forma automática preservando las proporciones */
-  margin-left: 20px; /* Añade 20px de espacio exterior a la izquierda */
-  right: 0; /* Sitúa la imagen en el extremo derecho */
-  top: 0; /* Sitúa la imagen en el extremo superior */
-  position: absolute; /* Ubica la imagen con posicionamiento absoluto respecto al elemento padre */
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 3px solid #fff;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.logo-derecho:hover {
+  transform: scale(1.1) rotate(-5deg);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
 }
 
 /* ============================================
@@ -62,26 +108,88 @@ tr {
    ============================================ */
 /* Contenedor principal donde se muestra la lista de productos escaneados */
 .contenedor-inventario {
-  font-size: x-large; /* Incrementa el tamaño del texto */
-  height: 60vh; /* Establece la altura equivalente al 60% del viewport */
-  max-height: 60vh; /* Impide que exceda el 60% de la altura de la ventana */
-  overflow-y: auto; /* Habilita desplazamiento vertical cuando el contenido desborda */
-  border: 1px solid black; /* Aplica un contorno negro sólido de 1px */
-  padding: 5px; /* Incorpora 5px de relleno interior */
+  font-size: large;
+  flex: 1;
+  overflow-y: auto;
+  border: none;
+  padding: 15px;
+  background: linear-gradient(145deg, #ffffff, #f8f9fa);
+  border-radius: 15px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  max-width: 98%;
+  min-height: 0;
+}
+
+/* Personalización del scrollbar */
+.contenedor-inventario::-webkit-scrollbar {
+  width: 12px;
+}
+
+.contenedor-inventario::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.contenedor-inventario::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 10px;
+  border: 2px solid #f1f1f1;
+}
+
+.contenedor-inventario::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
 }
 
 /* Tabla que muestra los productos agregados al carrito */
 #lista-productos {
-  max-height: 50%; /* Restringe la altura máxima al 50% del elemento contenedor */
-  width: 100%; /* Define que la tabla utilice todo el ancho disponible */
-  font-size: larger; /* Incrementa moderadamente el tamaño de la tipografía */
+  width: 100%;
+  font-size: x-large;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+#lista-productos th {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 12px;
+  text-align: left;
+  font-weight: 600;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+#lista-productos th:first-child {
+  border-radius: 10px 0 0 0;
+}
+
+#lista-productos th:last-child {
+  border-radius: 0 10px 0 0;
 }
 
 /* Cuerpo de la tabla donde se insertan las filas de productos */
 #cuerpo-datos {
-  max-height: 10%; /* Restringe la altura máxima al 10% del elemento contenedor */
-  width: 100%; /* Utiliza el 100% del ancho disponible */
-  font-size: larger; /* Incrementa moderadamente el tamaño de la tipografía */
+  width: 100%;
+  font-size: xx-large;
+}
+
+#cuerpo-datos tr {
+  background: white;
+  transition: all 0.3s ease;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+#cuerpo-datos tr:hover {
+  background: linear-gradient(135deg, #f5f7ff 0%, #f0f2ff 100%);
+  transform: scale(1.01);
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+}
+
+#cuerpo-datos td {
+  padding: 10px;
+  color: #333;
+  font-weight: 500;
 }
 
 /* ============================================
@@ -89,12 +197,35 @@ tr {
    ============================================ */
 /* Campo de texto donde se ingresa o escanea el código del producto */
 .campo-codigo {
-  font-size: xx-large; /* Tipografía de tamaño extra grande para el texto del campo de entrada */
-  width: calc(
-    99% - 8px
-  ); /* Computa el ancho para abarcar prácticamente todo el contenedor descontando 8px */
-  padding: 10px; /* Incorpora 10px de relleno interior */
-  height: 50px; /* Establece una altura constante de 50px */
+  font-size: x-large;
+  width: calc(98% - 8px);
+  padding: 12px;
+  height: 50px;
+  margin: 10px auto;
+  display: block;
+  border: 3px solid transparent;
+  border-radius: 15px;
+  background: linear-gradient(white, white) padding-box,
+    linear-gradient(135deg, #667eea 0%, #764ba2 100%) border-box;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+  font-weight: 600;
+  color: #333;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.campo-codigo:focus {
+  outline: none;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
+  border: 3px solid #667eea;
+}
+
+.campo-codigo::placeholder {
+  color: #999;
+  font-style: italic;
+  font-weight: 400;
 }
 
 /* ============================================
@@ -102,18 +233,61 @@ tr {
    ============================================ */
 /* Contenedor que agrupa todos los botones de acción del sistema POS */
 .panel-controles {
-  display: flex; /* Transforma el contenedor en un elemento flexible */
-  align-items: center; /* Alinea los elementos verticalmente en el centro del flexbox */
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 15px;
+  margin: 10px auto;
+  max-width: 98%;
+  flex-shrink: 0;
 }
 
 /* Estilos base compartidos por todos los botones de acción */
 .control-accion {
-  height: 15vh; /* Altura de 15% del viewport para mantener proporción */
-  width: 20vh; /* Ancho de 20% del viewport para mantener proporción */
-  background-size: cover; /* La imagen de fondo cubre todo el botón */
-  background-repeat: no-repeat; /* Evita que la imagen se repita */
-  background-position: center; /* Centra la imagen de fondo */
-  cursor: pointer; /* Cambia el cursor a una mano al pasar sobre el botón */
+  height: 100px;
+  width: 100px;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  cursor: pointer;
+  border: none;
+  border-radius: 15px;
+  background-color: white;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.control-accion::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(102, 126, 234, 0.1) 0%,
+    rgba(118, 75, 162, 0.1) 100%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.control-accion:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 35px rgba(102, 126, 234, 0.3);
+}
+
+.control-accion:hover::before {
+  opacity: 1;
+}
+
+.control-accion:active {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
 }
 
 /* ============================================
@@ -121,47 +295,77 @@ tr {
    ============================================ */
 /* Botón 1: Pago con transferencia bancaria o depósito */
 #btn1 {
-  background-image: url("../img/banco.png"); /* Establece la imagen de fondo específica para el botón */
-  background-size: 70%; /* Ajusta el tamaño de la imagen de fondo al 70% del botón */
-  background-position: center; /* Establece el color de fondo como transparente */
-  background-repeat: no-repeat; /* Impide la repetición de la imagen de fondo */
-  padding: 10px; /* Añade espacio interior al botón */
+  background-image: url("../img/banco.png");
+  background-size: 60%;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 10px;
+  background-color: #e8f5e9;
+}
+
+#btn1:hover {
+  background-color: #c8e6c9;
+  background-size: 65%;
 }
 
 /* Botón 2: Ver o gestionar el carrito de compras */
 #btn2 {
-  background-image: url("../img/Carrito.png"); /* Establece la imagen de fondo específica para el botón */
-  background-size: 70%; /* Ajusta el tamaño de la imagen de fondo al 70% del botón */
-  background-position: center; /* Establece el color de fondo como transparente */
-  background-repeat: no-repeat; /* Impide la repetición de la imagen de fondo */
-  padding: 10px; /* Añade espacio interior al botón */
+  background-image: url("../img/Carrito.png");
+  background-size: 60%;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 10px;
+  background-color: #fff3e0;
+}
+
+#btn2:hover {
+  background-color: #ffe0b2;
+  background-size: 65%;
 }
 
 /* Botón 3: Iniciar una nueva transacción o limpiar el carrito */
 #btn3 {
-  background-image: url("../img/nuevo.png"); /* Establece la imagen de fondo específica para el botón */
-  background-size: 70%; /* Ajusta el tamaño de la imagen de fondo al 70% del botón */
-  background-position: center; /* Establece el color de fondo como transparente */
-  background-repeat: no-repeat; /* Impide la repetición de la imagen de fondo */
-  padding: 10px; /* Añade espacio interior al botón */
+  background-image: url("../img/nuevo.png");
+  background-size: 60%;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 10px;
+  background-color: #e3f2fd;
+}
+
+#btn3:hover {
+  background-color: #bbdefb;
+  background-size: 65%;
 }
 
 /* Botón 4: Aplicar descuentos o promociones especiales */
 #btn4 {
-  background-image: url("../img/SALE.png"); /* Establece la imagen de fondo específica para el botón */
-  background-size: 70%; /* Ajusta el tamaño de la imagen de fondo al 70% del botón */
-  background-position: center; /* Establece el color de fondo como transparente */
-  background-repeat: no-repeat; /* Impide la repetición de la imagen de fondo */
-  padding: 10px; /* Añade espacio interior al botón */
+  background-image: url("../img/SALE.png");
+  background-size: 60%;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 10px;
+  background-color: #fce4ec;
+}
+
+#btn4:hover {
+  background-color: #f8bbd0;
+  background-size: 65%;
 }
 
 /* Botón 5: Pago con tarjeta de crédito o débito */
 #btn5 {
-  background-image: url("../img/tarjeta.png"); /* Establece la imagen de fondo específica para el botón */
-  background-size: 70%; /* Ajusta el tamaño de la imagen de fondo al 70% del botón */
-  background-position: center; /* Establece el color de fondo como transparente */
-  background-repeat: no-repeat; /* Impide la repetición de la imagen de fondo */
-  padding: 10px; /* Añade espacio interior al botón */
+  background-image: url("../img/tarjeta.png");
+  background-size: 60%;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 10px;
+  background-color: #f3e5f5;
+}
+
+#btn5:hover {
+  background-color: #e1bee7;
+  background-size: 65%;
 }
 
 /* ============================================
@@ -169,12 +373,52 @@ tr {
    ============================================ */
 /* Muestra el total acumulado de los productos en el carrito */
 .total-container {
-  display: flex; /* Establece un contenedor flexible */
-  border: 2px solid black; /* Aplica un borde negro de 2px */
-  width: 30%; /* Establece el ancho del contenedor */
-  height: 3dvw; /* Establece la altura del contenedor */
-  margin-left: auto; /* Aplica un margen izquierdo automático */
-  font-size: x-large; /* Establece el tamaño de fuente como x-large */
-  align-items: center; /* Centra los elementos en el eje vertical */
-  justify-content: center; /* Centra los elementos en el eje horizontal */
+  display: flex;
+  border: none;
+  flex: 1;
+  height: 100px;
+  margin-left: auto;
+  font-size: 2em;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(145deg, #ffffff, #f0f0f0);
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  padding: 15px 30px;
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+  min-width: 250px;
 }
+
+.total-container::before {
+  content: "TOTAL: ";
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.4em;
+  color: #888;
+  font-weight: 600;
+  letter-spacing: 2px;
+}
+
+.total-amount {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 800;
+  margin-top: 15px;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* @keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+} */

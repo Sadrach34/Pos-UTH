@@ -169,29 +169,68 @@ function buscarProductoPorCodigo(evento) {
       for (let i = 0; i < productos.length; i++) {
         if (productos[i][0] === codigo) {
           const tabla = document.getElementById("cuerpo-datos");
-          const renglon = tabla.insertRow();
-          const celdaCantidad = renglon.insertCell(0);
-          const celdaNombre = renglon.insertCell(1);
-          const celdaPrecio = renglon.insertCell(2);
-          const celdaTotal = renglon.insertCell(3);
+          const nombreProducto = productos[i][1];
+          const precioUnitario = productos[i][2];
 
-          // Aplicar estilos
-          celdaCantidad.setAttribute("style", "text-align: center;");
-          celdaNombre.setAttribute("style", "text-align: center;");
-          celdaPrecio.setAttribute("style", "text-align: center;");
-          celdaTotal.setAttribute("style", "text-align: center;");
+          // Buscar si el producto ya existe en la tabla
+          let productoExistente = null;
+          let filaExistente = -1;
 
-          // Calcular el subtotal del producto
-          const subtotal = productos[i][2] * cantidad;
+          for (let j = 0; j < tabla.rows.length; j++) {
+            if (tabla.rows[j].cells[1].innerText === nombreProducto) {
+              productoExistente = tabla.rows[j];
+              filaExistente = j;
+              break;
+            }
+          }
 
-          // Llenar las celdas
-          celdaCantidad.innerHTML = cantidad;
-          celdaNombre.innerHTML = productos[i][1];
-          celdaPrecio.innerHTML = `$${productos[i][2]}`;
-          celdaTotal.innerHTML = `$${subtotal.toFixed(2)}`;
+          if (productoExistente) {
+            // El producto ya existe, sumar la cantidad
+            const cantidadActual = parseInt(
+              productoExistente.cells[0].innerText
+            );
+            const nuevaCantidad = cantidadActual + cantidad;
 
-          // Agregar al total general
-          totalProductos += subtotal;
+            // Calcular el subtotal anterior y el nuevo
+            const subtotalAnterior = parseFloat(
+              productoExistente.cells[3].innerText.replace("$", "")
+            );
+            const nuevoSubtotal = precioUnitario * nuevaCantidad;
+
+            // Actualizar las celdas
+            productoExistente.cells[0].innerHTML = nuevaCantidad;
+            productoExistente.cells[3].innerHTML = `$${nuevoSubtotal.toFixed(
+              2
+            )}`;
+
+            // Actualizar el total general (restar el anterior y sumar el nuevo)
+            totalProductos = totalProductos - subtotalAnterior + nuevoSubtotal;
+          } else {
+            // El producto no existe, crear nueva fila
+            const renglon = tabla.insertRow();
+            const celdaCantidad = renglon.insertCell(0);
+            const celdaNombre = renglon.insertCell(1);
+            const celdaPrecio = renglon.insertCell(2);
+            const celdaTotal = renglon.insertCell(3);
+
+            // Aplicar estilos
+            celdaCantidad.setAttribute("style", "text-align: center;");
+            celdaNombre.setAttribute("style", "text-align: center;");
+            celdaPrecio.setAttribute("style", "text-align: center;");
+            celdaTotal.setAttribute("style", "text-align: center;");
+
+            // Calcular el subtotal del producto
+            const subtotal = precioUnitario * cantidad;
+
+            // Llenar las celdas
+            celdaCantidad.innerHTML = cantidad;
+            celdaNombre.innerHTML = nombreProducto;
+            celdaPrecio.innerHTML = `$${precioUnitario}`;
+            celdaTotal.innerHTML = `$${subtotal.toFixed(2)}`;
+
+            // Agregar al total general
+            totalProductos += subtotal;
+          }
 
           // Actualizar la visualización del total
           const elementoTotal = document.getElementById("total");
@@ -208,7 +247,7 @@ function buscarProductoPorCodigo(evento) {
     }
   }
 
-  // Identificamos la tecla esc, la cual elimina el último producto agregado
+  // Identificamos la tecla Delete, la cual elimina el último producto agregado
   else if (evento.key === "Delete") {
     const tabla = document.getElementById("cuerpo-datos");
     if (tabla.rows.length > 0) {
@@ -226,38 +265,100 @@ function buscarProductoPorCodigo(evento) {
     }
   }
 
-  // tab repite el último código ingresado
+  // Tecla + incrementa la cantidad del último producto
   else if (evento.key === "+") {
-    evento.preventDefault(); // Prevenir el comportamiento por defecto del tab
+    evento.preventDefault(); // Prevenir el comportamiento por defecto
     const tabla = document.getElementById("cuerpo-datos");
+
     if (tabla.rows.length > 0) {
       const ultimaFila = tabla.rows[tabla.rows.length - 1];
-      const codigoUltimoProducto = ultimaFila.cells[1].innerText;
+      const nombreProducto = ultimaFila.cells[1].innerText;
+
+      // Buscar el producto en el array para obtener su precio
       for (let i = 0; i < productos.length; i++) {
-        if (productos[i][1] === codigoUltimoProducto) {
-          const renglon = tabla.insertRow();
-          const celdaCantidad = renglon.insertCell(0);
-          const celdaNombre = renglon.insertCell(1);
-          const celdaPrecio = renglon.insertCell(2);
-          const celdaTotal = renglon.insertCell(3);
+        if (productos[i][1] === nombreProducto) {
+          // Obtener cantidad actual y precio unitario
+          const cantidadActual = parseInt(ultimaFila.cells[0].innerText);
+          const precioUnitario = productos[i][2];
 
-          // Aplicar estilos
-          celdaCantidad.setAttribute("style", "text-align: center;");
-          celdaNombre.setAttribute("style", "text-align: center;");
-          celdaPrecio.setAttribute("style", "text-align: center;");
-          celdaTotal.setAttribute("style", "text-align: center;");
+          // Incrementar cantidad
+          const nuevaCantidad = cantidadActual + 1;
 
-          // Calcular el subtotal del producto
-          const subtotal = productos[i][2] * 1;
+          // Calcular nuevo subtotal
+          const nuevoSubtotal = precioUnitario * nuevaCantidad;
 
-          // Llenar las celdas
-          celdaCantidad.innerHTML = 1;
-          celdaNombre.innerHTML = productos[i][1];
-          celdaPrecio.innerHTML = `$${productos[i][2]}`;
-          celdaTotal.innerHTML = `$${subtotal.toFixed(2)}`;
+          // Obtener el subtotal anterior para restarlo del total
+          const subtotalAnterior = parseFloat(
+            ultimaFila.cells[3].innerText.replace("$", "")
+          );
 
-          // Agregar al total general
-          totalProductos += subtotal;
+          // Actualizar las celdas
+          ultimaFila.cells[0].innerHTML = nuevaCantidad;
+          ultimaFila.cells[3].innerHTML = `$${nuevoSubtotal.toFixed(2)}`;
+
+          // Actualizar el total general (restar el anterior y sumar el nuevo)
+          totalProductos = totalProductos - subtotalAnterior + nuevoSubtotal;
+
+          // Actualizar la visualización del total
+          const elementoTotal = document.getElementById("total");
+          if (elementoTotal) {
+            elementoTotal.innerHTML = `Total: $${totalProductos.toFixed(2)}`;
+          }
+
+          break; // Salir del bucle una vez que se encuentra el producto
+        }
+      }
+    }
+  }
+
+  // Tecla - decrementa la cantidad del último producto
+  else if (evento.key === "-") {
+    evento.preventDefault(); // Prevenir el comportamiento por defecto
+    const tabla = document.getElementById("cuerpo-datos");
+
+    if (tabla.rows.length > 0) {
+      const ultimaFila = tabla.rows[tabla.rows.length - 1];
+      const nombreProducto = ultimaFila.cells[1].innerText;
+
+      // Buscar el producto en el array para obtener su precio
+      for (let i = 0; i < productos.length; i++) {
+        if (productos[i][1] === nombreProducto) {
+          // Obtener cantidad actual y precio unitario
+          const cantidadActual = parseInt(ultimaFila.cells[0].innerText);
+          const precioUnitario = productos[i][2];
+
+          // Decrementar cantidad
+          const nuevaCantidad = cantidadActual - 1;
+
+          if (nuevaCantidad < 1) {
+            const ultimaFila = tabla.rows[tabla.rows.length - 1];
+            const totalCelda = ultimaFila.cells[3].innerText;
+            const totalValor = parseFloat(totalCelda.replace("$", ""));
+            totalProductos -= totalValor;
+            tabla.deleteRow(tabla.rows.length - 1);
+
+            // Actualizar la visualización del total
+            const elementoTotal = document.getElementById("total");
+            if (elementoTotal) {
+              elementoTotal.innerHTML = `Total: $${totalProductos.toFixed(2)}`;
+            }
+            return;
+          }
+
+          // Calcular nuevo subtotal
+          const nuevoSubtotal = precioUnitario * nuevaCantidad;
+
+          // Obtener el subtotal anterior para restarlo del total
+          const subtotalAnterior = parseFloat(
+            ultimaFila.cells[3].innerText.replace("$", "")
+          );
+
+          // Actualizar las celdas
+          ultimaFila.cells[0].innerHTML = nuevaCantidad;
+          ultimaFila.cells[3].innerHTML = `$${nuevoSubtotal.toFixed(2)}`;
+
+          // Actualizar el total general (restar el anterior y sumar el nuevo)
+          totalProductos = totalProductos - subtotalAnterior + nuevoSubtotal;
 
           // Actualizar la visualización del total
           const elementoTotal = document.getElementById("total");
