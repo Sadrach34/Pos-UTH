@@ -105,6 +105,7 @@ const productos = [
 // Variables globales
 let totalProductos = 0;
 let modalAbierto = false;
+let filaSeleccionada = -1; // Índice de la fila seleccionada (-1 = ninguna)
 
 // Cuando se carga la página, configurar eventos globales
 document.addEventListener("DOMContentLoaded", function () {
@@ -117,6 +118,30 @@ document.addEventListener("DOMContentLoaded", function () {
     inputCodigo.focus();
   }
 });
+
+// Función para seleccionar una fila visualmente
+function seleccionarFila(indice) {
+  const tabla = document.getElementById("cuerpo-datos");
+
+  // Remover selección previa
+  for (let i = 0; i < tabla.rows.length; i++) {
+    tabla.rows[i].classList.remove("seleccionada");
+  }
+
+  // Aplicar selección a la fila especificada
+  if (indice >= 0 && indice < tabla.rows.length) {
+    filaSeleccionada = indice;
+    tabla.rows[indice].classList.add("seleccionada");
+
+    // Hacer scroll para asegurar que la fila seleccionada sea visible
+    tabla.rows[indice].scrollIntoView({
+      behavior: "smooth",
+      block: "nearest",
+    });
+  } else {
+    filaSeleccionada = -1;
+  }
+}
 
 // Esta función maneja todos los eventos de teclado en la página
 function manejarEventoGlobal(evento) {
@@ -238,11 +263,50 @@ function buscarProductoPorCodigo(evento) {
             elementoTotal.innerHTML = `Total: $${totalProductos.toFixed(2)}`;
           }
 
+          // Seleccionar automáticamente la última fila (la que acaba de ser agregada/modificada)
+          if (productoExistente) {
+            // Si el producto ya existía, seleccionar esa fila
+            seleccionarFila(filaExistente);
+          } else {
+            // Si es nuevo, seleccionar la última fila
+            seleccionarFila(tabla.rows.length - 1);
+          }
+
           // Limpiar el campo de entrada
           document.getElementById("entrada-codigo").value = "";
 
           break; // Salir del bucle una vez que se encuentra el producto
         }
+      }
+    }
+  }
+
+  // Teclas de flecha para navegar por los productos
+  else if (evento.key === "ArrowUp") {
+    evento.preventDefault();
+    const tabla = document.getElementById("cuerpo-datos");
+    if (tabla.rows.length > 0) {
+      if (filaSeleccionada <= 0) {
+        // Si no hay selección o estamos en la primera, ir a la última
+        seleccionarFila(tabla.rows.length - 1);
+      } else {
+        // Ir a la fila anterior
+        seleccionarFila(filaSeleccionada - 1);
+      }
+    }
+  }
+
+  // Tecla de flecha hacia abajo para navegar por los productos
+  else if (evento.key === "ArrowDown") {
+    evento.preventDefault();
+    const tabla = document.getElementById("cuerpo-datos");
+    if (tabla.rows.length > 0) {
+      if (filaSeleccionada < 0 || filaSeleccionada >= tabla.rows.length - 1) {
+        // Si no hay selección o estamos en la última, ir a la primera
+        seleccionarFila(0);
+      } else {
+        // Ir a la fila siguiente
+        seleccionarFila(filaSeleccionada + 1);
       }
     }
   }
@@ -262,23 +326,34 @@ function buscarProductoPorCodigo(evento) {
       if (elementoTotal) {
         elementoTotal.innerHTML = `Total: $${totalProductos.toFixed(2)}`;
       }
+
+      // Actualizar la selección
+      if (filaSeleccionada >= tabla.rows.length) {
+        seleccionarFila(tabla.rows.length - 1);
+      }
     }
   }
 
-  // Tecla + incrementa la cantidad del último producto
+  // Tecla + incrementa la cantidad del producto seleccionado
   else if (evento.key === "+") {
     evento.preventDefault(); // Prevenir el comportamiento por defecto
     const tabla = document.getElementById("cuerpo-datos");
 
     if (tabla.rows.length > 0) {
-      const ultimaFila = tabla.rows[tabla.rows.length - 1];
-      const nombreProducto = ultimaFila.cells[1].innerText;
+      // Si no hay fila seleccionada, seleccionar la última
+      if (filaSeleccionada < 0 || filaSeleccionada >= tabla.rows.length) {
+        filaSeleccionada = tabla.rows.length - 1;
+        seleccionarFila(filaSeleccionada);
+      }
+
+      const filaActual = tabla.rows[filaSeleccionada];
+      const nombreProducto = filaActual.cells[1].innerText;
 
       // Buscar el producto en el array para obtener su precio
       for (let i = 0; i < productos.length; i++) {
         if (productos[i][1] === nombreProducto) {
           // Obtener cantidad actual y precio unitario
-          const cantidadActual = parseInt(ultimaFila.cells[0].innerText);
+          const cantidadActual = parseInt(filaActual.cells[0].innerText);
           const precioUnitario = productos[i][2];
 
           // Incrementar cantidad
@@ -289,12 +364,12 @@ function buscarProductoPorCodigo(evento) {
 
           // Obtener el subtotal anterior para restarlo del total
           const subtotalAnterior = parseFloat(
-            ultimaFila.cells[3].innerText.replace("$", "")
+            filaActual.cells[3].innerText.replace("$", "")
           );
 
           // Actualizar las celdas
-          ultimaFila.cells[0].innerHTML = nuevaCantidad;
-          ultimaFila.cells[3].innerHTML = `$${nuevoSubtotal.toFixed(2)}`;
+          filaActual.cells[0].innerHTML = nuevaCantidad;
+          filaActual.cells[3].innerHTML = `$${nuevoSubtotal.toFixed(2)}`;
 
           // Actualizar el total general (restar el anterior y sumar el nuevo)
           totalProductos = totalProductos - subtotalAnterior + nuevoSubtotal;
@@ -311,36 +386,52 @@ function buscarProductoPorCodigo(evento) {
     }
   }
 
-  // Tecla - decrementa la cantidad del último producto
+  // Tecla - decrementa la cantidad del producto seleccionado
   else if (evento.key === "-") {
     evento.preventDefault(); // Prevenir el comportamiento por defecto
     const tabla = document.getElementById("cuerpo-datos");
 
     if (tabla.rows.length > 0) {
-      const ultimaFila = tabla.rows[tabla.rows.length - 1];
-      const nombreProducto = ultimaFila.cells[1].innerText;
+      // Si no hay fila seleccionada, seleccionar la última
+      if (filaSeleccionada < 0 || filaSeleccionada >= tabla.rows.length) {
+        filaSeleccionada = tabla.rows.length - 1;
+        seleccionarFila(filaSeleccionada);
+      }
+
+      const filaActual = tabla.rows[filaSeleccionada];
+      const nombreProducto = filaActual.cells[1].innerText;
 
       // Buscar el producto en el array para obtener su precio
       for (let i = 0; i < productos.length; i++) {
         if (productos[i][1] === nombreProducto) {
           // Obtener cantidad actual y precio unitario
-          const cantidadActual = parseInt(ultimaFila.cells[0].innerText);
+          const cantidadActual = parseInt(filaActual.cells[0].innerText);
           const precioUnitario = productos[i][2];
 
           // Decrementar cantidad
           const nuevaCantidad = cantidadActual - 1;
 
           if (nuevaCantidad < 1) {
-            const ultimaFila = tabla.rows[tabla.rows.length - 1];
-            const totalCelda = ultimaFila.cells[3].innerText;
+            const totalCelda = filaActual.cells[3].innerText;
             const totalValor = parseFloat(totalCelda.replace("$", ""));
             totalProductos -= totalValor;
-            tabla.deleteRow(tabla.rows.length - 1);
+            tabla.deleteRow(filaSeleccionada);
 
             // Actualizar la visualización del total
             const elementoTotal = document.getElementById("total");
             if (elementoTotal) {
               elementoTotal.innerHTML = `Total: $${totalProductos.toFixed(2)}`;
+            }
+
+            // Actualizar la selección después de eliminar
+            if (tabla.rows.length > 0) {
+              if (filaSeleccionada >= tabla.rows.length) {
+                seleccionarFila(tabla.rows.length - 1);
+              } else {
+                seleccionarFila(filaSeleccionada);
+              }
+            } else {
+              filaSeleccionada = -1;
             }
             return;
           }
@@ -350,12 +441,12 @@ function buscarProductoPorCodigo(evento) {
 
           // Obtener el subtotal anterior para restarlo del total
           const subtotalAnterior = parseFloat(
-            ultimaFila.cells[3].innerText.replace("$", "")
+            filaActual.cells[3].innerText.replace("$", "")
           );
 
           // Actualizar las celdas
-          ultimaFila.cells[0].innerHTML = nuevaCantidad;
-          ultimaFila.cells[3].innerHTML = `$${nuevoSubtotal.toFixed(2)}`;
+          filaActual.cells[0].innerHTML = nuevaCantidad;
+          filaActual.cells[3].innerHTML = `$${nuevoSubtotal.toFixed(2)}`;
 
           // Actualizar el total general (restar el anterior y sumar el nuevo)
           totalProductos = totalProductos - subtotalAnterior + nuevoSubtotal;
@@ -398,6 +489,37 @@ function buscarProductoPorCodigo(evento) {
     const inputClave = document.getElementById("input-clave");
     inputClave.focus();
   }
+
+  // realizar venta (tecla F11) - abrir modal de pago
+  else if (evento.key === "F11") {
+    evento.preventDefault(); // Prevenir el comportamiento por defecto del tab
+
+    // Verificar que no haya un modal ya abierto
+    if (modalAbierto) {
+      return;
+    }
+
+    // Verificar que haya productos en la tabla
+    const tabla = document.getElementById("cuerpo-datos");
+    if (tabla.rows.length === 0) {
+      alert("No hay productos para vender.");
+      return;
+    }
+
+    // Marcar que hay un modal abierto
+    modalAbierto = true;
+
+    const modal = crearModalPago();
+    document.body.appendChild(modal);
+
+    // Enfocar el campo de pago
+    const inputPago = document.getElementById("input-pago");
+    if (inputPago) {
+      inputPago.focus();
+    }
+  }
+
+  actualizarPrecioTotal();
 }
 
 // Función para actualizar el precio total en la interfaz
@@ -418,6 +540,7 @@ function actualizarPrecioTotal() {
     elementosTotal[i].innerHTML = `$${totalProductos.toFixed(2)}`;
   }
 }
+
 // Función para crear un modal de entrada de contraseña
 function crearModalContrasena() {
   const modal = document.createElement("div");
@@ -541,4 +664,256 @@ function validarYCancelarVenta(clave) {
   } else if (clave !== "") {
     alert("Clave incorrecta. No se pudo cancelar la venta.");
   }
+}
+
+// Función para crear modal de pago
+function crearModalPago() {
+  const modal = document.createElement("div");
+  modal.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  `;
+
+  const contenido = document.createElement("div");
+  contenido.style.cssText = `
+    background: linear-gradient(145deg, #ffffff, #f8f9fa);
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    min-width: 400px;
+    border: 3px solid transparent;
+    background-clip: padding-box;
+  `;
+
+  contenido.innerHTML = `
+    <h2 style="
+      margin: 0 0 30px 0;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-size: 2em;
+      font-weight: 800;
+    ">💰 Procesar Pago</h2>
+    
+    <div style="
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 20px;
+      border-radius: 15px;
+      margin-bottom: 25px;
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+    ">
+      <p style="margin: 0 0 10px 0; font-size: 1.1em; opacity: 0.9;">Total a Pagar:</p>
+      <p id="total-pago" style="
+        margin: 0;
+        font-size: 2.5em;
+        font-weight: bold;
+        letter-spacing: 2px;
+      ">$${totalProductos.toFixed(2)}</p>
+    </div>
+    
+    <div style="margin-bottom: 25px;">
+      <label style="
+        display: block;
+        margin-bottom: 10px;
+        font-size: 1.2em;
+        color: #333;
+        font-weight: 600;
+      ">Con cuánto paga:</label>
+      <input type="number" id="input-pago" step="0.01" min="0" style="
+        font-size: 1.8em;
+        padding: 15px;
+        width: calc(100% - 30px);
+        border: 3px solid transparent;
+        border-radius: 10px;
+        text-align: center;
+        background: linear-gradient(white, white) padding-box,
+                    linear-gradient(135deg, #667eea 0%, #764ba2 100%) border-box;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        font-weight: 600;
+      " />
+    </div>
+    
+    <div id="cambio-container" style="
+      background: #f5f5f5;
+      padding: 20px;
+      border-radius: 15px;
+      margin-bottom: 25px;
+      min-height: 80px;
+      border: 2px solid #ddd;
+      transition: all 0.3s ease;
+    ">
+      <p style="margin: 0 0 10px 0; font-size: 1.1em; color: #666; font-weight: 600; transition: all 0.3s ease;">Cambio:</p>
+      <p id="cambio-valor" style="
+        margin: 0;
+        font-size: 2.2em;
+        font-weight: bold;
+        color: #999;
+        transition: all 0.3s ease;
+      ">$0.00</p>
+    </div>
+    
+    <div style="display: flex; gap: 15px; justify-content: center;">
+      <button id="btn-finalizar" disabled style="
+        background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+        color: white;
+        padding: 15px 30px;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 1.1em;
+        font-weight: 600;
+        box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+        transition: all 0.3s ease;
+        opacity: 0.5;
+      " onmouseover="if(!this.disabled) {this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(76, 175, 80, 0.5)'}"
+         onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 5px 15px rgba(76, 175, 80, 0.4)'">
+        ✓ Finalizar Venta
+      </button>
+      
+      <button id="btn-cancelar-pago" style="
+        background: linear-gradient(135deg, #f44336 0%, #e53935 100%);
+        color: white;
+        padding: 15px 30px;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 1.1em;
+        font-weight: 600;
+        box-shadow: 0 5px 15px rgba(244, 67, 54, 0.4);
+        transition: all 0.3s ease;
+      " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(244, 67, 54, 0.5)'"
+         onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 5px 15px rgba(244, 67, 54, 0.4)'">
+        Cancelar
+      </button>
+    </div>
+  `;
+
+  modal.appendChild(contenido);
+
+  // Función para cerrar el modal
+  function cerrarModal() {
+    if (document.body.contains(modal)) {
+      document.body.removeChild(modal);
+    }
+    modalAbierto = false;
+    // Re-enfocar el input de código
+    const inputCodigo = document.getElementById("entrada-codigo");
+    if (inputCodigo) {
+      inputCodigo.focus();
+    }
+  }
+
+  // Función para calcular el cambio dinámicamente
+  function calcularCambio() {
+    const inputPago = document.getElementById("input-pago");
+    const pago = parseFloat(inputPago.value) || 0;
+    const cambioContainer = document.getElementById("cambio-container");
+    const cambioValor = document.getElementById("cambio-valor");
+    const btnFinalizar = document.getElementById("btn-finalizar");
+
+    // Si no hay valor o es 0, ocultar el cambio y deshabilitar finalizar
+    if (pago <= 0) {
+      cambioContainer.style.display = "none";
+      btnFinalizar.disabled = true;
+      btnFinalizar.style.opacity = "0.5";
+      btnFinalizar.style.cursor = "not-allowed";
+      return;
+    }
+
+    // Si el pago es menor al total, mostrar en rojo
+    if (pago < totalProductos) {
+      const faltante = totalProductos - pago;
+      cambioValor.innerText = `-$${faltante.toFixed(2)}`;
+      cambioValor.style.color = "#c62828";
+      cambioContainer.style.background = "#ffebee";
+      cambioContainer.style.borderColor = "#ef5350";
+      cambioContainer.querySelector("p").innerText = "Falta:";
+      cambioContainer.querySelector("p").style.color = "#c62828";
+      cambioContainer.style.display = "block";
+
+      // Deshabilitar botón de finalizar
+      btnFinalizar.disabled = true;
+      btnFinalizar.style.opacity = "0.5";
+      btnFinalizar.style.cursor = "not-allowed";
+      return;
+    }
+
+    // Si el pago es suficiente, calcular y mostrar el cambio en verde
+    const cambio = pago - totalProductos;
+    cambioValor.innerText = `$${cambio.toFixed(2)}`;
+    cambioValor.style.color = "#1b5e20";
+    cambioContainer.style.background = "#e8f5e9";
+    cambioContainer.style.borderColor = "#4caf50";
+    cambioContainer.querySelector("p").innerText = "Cambio:";
+    cambioContainer.querySelector("p").style.color = "#2e7d32";
+    cambioContainer.style.display = "block";
+
+    // Habilitar botón de finalizar
+    btnFinalizar.disabled = false;
+    btnFinalizar.style.opacity = "1";
+    btnFinalizar.style.cursor = "pointer";
+  }
+
+  // Función para finalizar la venta
+  function finalizarVenta() {
+    // Limpiar la tabla de productos
+    const tabla = document.getElementById("cuerpo-datos");
+    while (tabla.rows.length > 0) {
+      tabla.deleteRow(0);
+    }
+
+    // Resetear el total
+    totalProductos = 0;
+    filaSeleccionada = -1;
+    const elementoTotal = document.getElementById("total");
+    if (elementoTotal) {
+      elementoTotal.innerHTML = `$${totalProductos.toFixed(2)}`;
+    }
+
+    alert("✓ Venta realizada con éxito!");
+    cerrarModal();
+  }
+
+  // Calcular cambio dinámicamente mientras se escribe
+  const inputPago = contenido.querySelector("#input-pago");
+  inputPago.oninput = calcularCambio;
+
+  // También calcular al cambiar el valor
+  inputPago.onchange = calcularCambio;
+
+  // Manejar botón de finalizar
+  contenido.querySelector("#btn-finalizar").onclick = finalizarVenta;
+
+  // Manejar botón de cancelar
+  contenido.querySelector("#btn-cancelar-pago").onclick = cerrarModal;
+
+  // Permitir finalizar con Enter (solo si el botón está habilitado)
+  inputPago.onkeypress = function (e) {
+    if (e.key === "Enter") {
+      const btnFinalizar = document.getElementById("btn-finalizar");
+      if (!btnFinalizar.disabled) {
+        finalizarVenta();
+      }
+    }
+  };
+
+  // Permitir cerrar con Escape
+  modal.onkeydown = function (e) {
+    if (e.key === "Escape") {
+      cerrarModal();
+    }
+  };
+
+  return modal;
 }

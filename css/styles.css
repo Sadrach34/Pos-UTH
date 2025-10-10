@@ -178,6 +178,7 @@ tr {
   background: white;
   transition: all 0.3s ease;
   border-bottom: 1px solid #e0e0e0;
+  cursor: pointer;
 }
 
 #cuerpo-datos tr:hover {
@@ -186,10 +187,25 @@ tr {
   box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
 }
 
+/* Estilo para la fila seleccionada - se aplica via JavaScript */
+#cuerpo-datos tr.seleccionada {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  /* background: #aaa8a8 !important; */
+  color: white !important;
+  font-weight: bold !important;
+  transform: scale(1.02);
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+}
+
+#cuerpo-datos tr.seleccionada td {
+  color: white !important;
+}
+
 #cuerpo-datos td {
   padding: 10px;
   color: #333;
   font-weight: 500;
+  transition: color 0.3s ease;
 }
 
 /* ============================================
