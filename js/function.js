@@ -441,3 +441,5 @@ function validarYCancelarVenta(clave) {
     alert("Clave incorrecta. No se pudo cancelar la venta.");
   }
 }
+
+//Sprint 7
