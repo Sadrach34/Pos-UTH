@@ -45,11 +45,41 @@
     />
     <!--- 5 botones con imagen --->
     <div class="panel-controles">
-      <input type="button" id="btn1" class="control-accion" />
-      <input type="button" id="btn2" class="control-accion" />
-      <input type="button" id="btn3" class="control-accion" />
-      <input type="button" id="btn4" class="control-accion" />
-      <input type="button" id="btn5" class="control-accion" />
+      <input
+        type="button"
+        id="btn1"
+        class="control-accion"
+        value="Eliminar Producto"
+        onclick="eliminarProducto()"
+      />
+      <input
+        type="button"
+        id="btn2"
+        class="control-accion"
+        value="Finalizar Venta"
+        onclick="finalizarVenta()"
+      />
+      <input
+        type="button"
+        id="btn3"
+        class="control-accion"
+        value="Cancelar Venta"
+        onclick="solicitarCancelarVenta()"
+      />
+      <input
+        type="button"
+        id="btn4"
+        class="control-accion"
+        value="Buscar Producto"
+        onclick="abrirBuscarProducto()"
+      />
+      <input
+        type="button"
+        id="btn5"
+        class="control-accion"
+        value="Ver Inventario"
+        onclick="mostrarInventario()"
+      />
     </div>
 
     <!-- Total -->

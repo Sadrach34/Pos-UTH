@@ -442,8 +442,378 @@ function validarYCancelarVenta(clave) {
   }
 }
 
-
-
 // sprint 1
+
+function eliminarProducto() {
+  const tabla = document.getElementById("cuerpo-datos");
+  if (tabla.rows.length > 0) {
+    const ultimaFila = tabla.rows[tabla.rows.length - 1];
+    const totalCelda = ultimaFila.cells[3].innerText;
+    const totalValor = parseFloat(totalCelda.replace("$", ""));
+    totalProductos -= totalValor;
+    tabla.deleteRow(tabla.rows.length - 1);
+    actualizarPrecioTotal();
+  } else {
+    alert("No hay productos para eliminar.");
+  }
+}
+
+function finalizarVenta() {
+  const tabla = document.getElementById("cuerpo-datos");
+  if (tabla.rows.length === 0) {
+    alert("No hay productos en la venta.");
+    return;
+  }
+
+  const modal = document.createElement("div");
+  modal.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  `;
+
+  const contenido = document.createElement("div");
+  contenido.style.cssText = `
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    min-width: 300px;
+  `;
+
+  contenido.innerHTML = `
+    <h2>Finalizar Venta</h2>
+    <p style="font-size: 24px; font-weight: bold;">Total: $${totalProductos.toFixed(
+      2
+    )}</p>
+    <p>Ingrese el monto recibido:</p>
+    <input type="number" id="input-pago" step="0.01" style="
+      font-size: 20px;
+      padding: 10px;
+      width: 200px;
+      border: 2px solid #ccc;
+      border-radius: 5px;
+      text-align: center;
+    " />
+    <p id="cambio-texto" style="font-size: 18px; color: #4CAF50; font-weight: bold;"></p>
+    <br>
+    <button id="btn-procesar" style="
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-right: 10px;
+    ">Procesar Venta</button>
+    <button id="btn-cancelar-venta" style="
+      background-color: #f44336;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    ">Cancelar</button>
+  `;
+
+  modal.appendChild(contenido);
+  document.body.appendChild(modal);
+  modalAbierto = true;
+
+  const inputPago = document.getElementById("input-pago");
+  inputPago.focus();
+
+  inputPago.oninput = function () {
+    const montoPagado = parseFloat(inputPago.value) || 0;
+    const cambio = montoPagado - totalProductos;
+    const cambioTexto = document.getElementById("cambio-texto");
+    if (montoPagado >= totalProductos && montoPagado > 0) {
+      cambioTexto.innerHTML = `Cambio: $${cambio.toFixed(2)}`;
+      cambioTexto.style.color = "#4CAF50";
+    } else if (montoPagado > 0) {
+      cambioTexto.innerHTML = `Falta: $${Math.abs(cambio).toFixed(2)}`;
+      cambioTexto.style.color = "#f44336";
+    } else {
+      cambioTexto.innerHTML = "";
+    }
+  };
+
+  function cerrarModal() {
+    if (document.body.contains(modal)) {
+      document.body.removeChild(modal);
+    }
+    modalAbierto = false;
+  }
+
+  contenido.querySelector("#btn-procesar").onclick = function () {
+    const montoPagado = parseFloat(inputPago.value) || 0;
+    if (montoPagado >= totalProductos) {
+      const cambio = montoPagado - totalProductos;
+      alert(`Venta procesada exitosamente.\nCambio: $${cambio.toFixed(2)}`);
+
+      while (tabla.rows.length > 0) {
+        tabla.deleteRow(0);
+      }
+      totalProductos = 0;
+      actualizarPrecioTotal();
+      cerrarModal();
+    } else {
+      alert("El monto ingresado es insuficiente.");
+    }
+  };
+
+  contenido.querySelector("#btn-cancelar-venta").onclick = function () {
+    cerrarModal();
+  };
+
+  inputPago.onkeypress = function (e) {
+    if (e.key === "Enter") {
+      contenido.querySelector("#btn-procesar").click();
+    }
+  };
+}
+
+function solicitarCancelarVenta() {
+  const tabla = document.getElementById("cuerpo-datos");
+  if (tabla.rows.length === 0) {
+    alert("No hay productos para cancelar.");
+    return;
+  }
+
+  modalAbierto = true;
+  const modal = crearModalContrasena();
+  document.body.appendChild(modal);
+  const inputClave = document.getElementById("input-clave");
+  inputClave.focus();
+}
+
+function abrirBuscarProducto() {
+  const modal = document.createElement("div");
+  modal.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  `;
+
+  const contenido = document.createElement("div");
+  contenido.style.cssText = `
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+  `;
+
+  contenido.innerHTML = `
+    <h2>Buscar Producto</h2>
+    <input type="text" id="input-busqueda" placeholder="Escriba el nombre del producto..." style="
+      font-size: 16px;
+      padding: 10px;
+      width: 100%;
+      border: 2px solid #ccc;
+      border-radius: 5px;
+      margin-bottom: 15px;
+    " />
+    <div id="resultados-busqueda" style="max-height: 400px; overflow-y: auto;"></div>
+    <br>
+    <button id="btn-cerrar-busqueda" style="
+      background-color: #f44336;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    ">Cerrar</button>
+  `;
+
+  modal.appendChild(contenido);
+  document.body.appendChild(modal);
+  modalAbierto = true;
+
+  const inputBusqueda = document.getElementById("input-busqueda");
+  inputBusqueda.focus();
+
+  inputBusqueda.oninput = function () {
+    const termino = inputBusqueda.value.toLowerCase();
+    const resultados = document.getElementById("resultados-busqueda");
+
+    if (termino.length < 2) {
+      resultados.innerHTML =
+        "<p>Escriba al menos 2 caracteres para buscar...</p>";
+      return;
+    }
+
+    const productosFiltrados = productos.filter(
+      (p) => p[1].toLowerCase().includes(termino) || p[0].includes(termino)
+    );
+
+    if (productosFiltrados.length === 0) {
+      resultados.innerHTML = "<p>No se encontraron productos.</p>";
+      return;
+    }
+
+    let html = "<table style='width: 100%; border-collapse: collapse;'>";
+    html +=
+      "<tr style='background-color: #f2f2f2;'><th style='padding: 8px; border: 1px solid #ddd;'>Código</th><th style='padding: 8px; border: 1px solid #ddd;'>Producto</th><th style='padding: 8px; border: 1px solid #ddd;'>Precio</th><th style='padding: 8px; border: 1px solid #ddd;'>Acción</th></tr>";
+
+    productosFiltrados.forEach((producto) => {
+      html += `<tr>
+        <td style='padding: 8px; border: 1px solid #ddd; text-align: center;'>${producto[0]}</td>
+        <td style='padding: 8px; border: 1px solid #ddd;'>${producto[1]}</td>
+        <td style='padding: 8px; border: 1px solid #ddd; text-align: center;'>$${producto[2]}</td>
+        <td style='padding: 8px; border: 1px solid #ddd; text-align: center;'>
+          <button onclick="agregarProductoPorCodigo('${producto[0]}')" style="
+            background-color: #4CAF50;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+          ">Agregar</button>
+        </td>
+      </tr>`;
+    });
+    html += "</table>";
+    resultados.innerHTML = html;
+  };
+
+  function cerrarModal() {
+    if (document.body.contains(modal)) {
+      document.body.removeChild(modal);
+    }
+    modalAbierto = false;
+    document.getElementById("entrada-codigo").focus();
+  }
+
+  contenido.querySelector("#btn-cerrar-busqueda").onclick = cerrarModal;
+
+  modal.onkeydown = function (e) {
+    if (e.key === "Escape") {
+      cerrarModal();
+    }
+  };
+}
+
+function agregarProductoPorCodigo(codigo) {
+  for (let i = 0; i < productos.length; i++) {
+    if (productos[i][0] === codigo) {
+      const tabla = document.getElementById("cuerpo-datos");
+      const renglon = tabla.insertRow();
+      const celdaCantidad = renglon.insertCell(0);
+      const celdaNombre = renglon.insertCell(1);
+      const celdaPrecio = renglon.insertCell(2);
+      const celdaTotal = renglon.insertCell(3);
+
+      celdaCantidad.setAttribute("style", "text-align: center;");
+      celdaNombre.setAttribute("style", "text-align: center;");
+      celdaPrecio.setAttribute("style", "text-align: center;");
+      celdaTotal.setAttribute("style", "text-align: center;");
+
+      const subtotal = productos[i][2];
+
+      celdaCantidad.innerHTML = 1;
+      celdaNombre.innerHTML = productos[i][1];
+      celdaPrecio.innerHTML = `$${productos[i][2]}`;
+      celdaTotal.innerHTML = `$${subtotal.toFixed(2)}`;
+
+      totalProductos += subtotal;
+      actualizarPrecioTotal();
+      break;
+    }
+  }
+}
+
+function mostrarInventario() {
+  const modal = document.createElement("div");
+  modal.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  `;
+
+  const contenido = document.createElement("div");
+  contenido.style.cssText = `
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    max-width: 800px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+  `;
+
+  let html = "<h2>Inventario Completo</h2>";
+  html += "<table style='width: 100%; border-collapse: collapse;'>";
+  html +=
+    "<tr style='background-color: #f2f2f2;'><th style='padding: 8px; border: 1px solid #ddd;'>Código</th><th style='padding: 8px; border: 1px solid #ddd;'>Producto</th><th style='padding: 8px; border: 1px solid #ddd;'>Precio</th></tr>";
+
+  productos.forEach((producto) => {
+    html += `<tr>
+      <td style='padding: 8px; border: 1px solid #ddd; text-align: center;'>${producto[0]}</td>
+      <td style='padding: 8px; border: 1px solid #ddd;'>${producto[1]}</td>
+      <td style='padding: 8px; border: 1px solid #ddd; text-align: center;'>$${producto[2]}</td>
+    </tr>`;
+  });
+  html += "</table><br>";
+  html += `<button id="btn-cerrar-inventario" style="
+    background-color: #f44336;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+  ">Cerrar</button>`;
+
+  contenido.innerHTML = html;
+  modal.appendChild(contenido);
+  document.body.appendChild(modal);
+  modalAbierto = true;
+
+  function cerrarModal() {
+    if (document.body.contains(modal)) {
+      document.body.removeChild(modal);
+    }
+    modalAbierto = false;
+    document.getElementById("entrada-codigo").focus();
+  }
+
+  contenido.querySelector("#btn-cerrar-inventario").onclick = cerrarModal;
+
+  modal.onkeydown = function (e) {
+    if (e.key === "Escape") {
+      cerrarModal();
+    }
+  };
+}
 
 // sprint 2
