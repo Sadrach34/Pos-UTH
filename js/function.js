@@ -273,29 +273,42 @@ function buscarProductoPorCodigo(evento) {
 
   // Al presionar la tecla C se cancela la venta, se abre un prompt peguntando la clave 12345 y después muestra ventana de confirmación.
   else if (evento.key === "c" || evento.key === "C") {
-    evento.preventDefault(); // Prevenir el comportamiento por defecto del tab
+    evento.preventDefault();
 
-    // Verificar que no haya un modal ya abierto
     if (modalAbierto) {
       return;
     }
 
-    // Verificar que haya productos en la tabla
     const tabla = document.getElementById("cuerpo-datos");
     if (tabla.rows.length === 0) {
       alert("No hay productos para cancelar.");
       return;
     }
 
-    // Marcar que hay un modal abierto
     modalAbierto = true;
 
     const modal = crearModalContrasena();
     document.body.appendChild(modal);
 
-    // Enfocar el campo de entrada
     const inputClave = document.getElementById("input-clave");
     inputClave.focus();
+  }
+
+  // Al presionar la tecla P se procede al cierre de la venta
+  else if (evento.key === "p" || evento.key === "P") {
+    evento.preventDefault();
+
+    if (modalAbierto) {
+      return;
+    }
+
+    const tabla = document.getElementById("cuerpo-datos");
+    if (tabla.rows.length === 0) {
+      alert("No hay productos en la venta.");
+      return;
+    }
+
+    finalizarVenta();
   }
 }
 
@@ -441,8 +454,6 @@ function validarYCancelarVenta(clave) {
     alert("Clave incorrecta. No se pudo cancelar la venta.");
   }
 }
-
-// sprint 1
 
 function eliminarProducto() {
   const tabla = document.getElementById("cuerpo-datos");
