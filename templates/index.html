@@ -3,13 +3,20 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="css/styles.css" />
-    <script src="js/function.js"></script>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/styles.css') }}"
+    />
+    <script src="{{ url_for('static', filename='js/function-api.js') }}"></script>
     <title>Punto de Venta</title>
   </head>
   <body>
     <!-- Imagen en la esquina superior izquierda-->
-    <img class="logo-izquierdo" src="img/aciduladito.webp" alt="" />
+    <img
+      class="logo-izquierdo"
+      src="{{ url_for('static', filename='img/aciduladito.webp') }}"
+      alt=""
+    />
     <!-- definimos titulo-->
     <div class="encabezado-principal">
       <div>
@@ -20,7 +27,11 @@
       </div>
     </div>
     <!-- Imagen en la esquina superior derecha-->
-    <img class="logo-derecho" src="img/images.jpg" alt="" />
+    <img
+      class="logo-derecho"
+      src="{{ url_for('static', filename='img/images.jpg') }}"
+      alt=""
+    />
     <!--- Se debe visualizar una tabla donde se listaran los productor--->
     <div class="contenedor-inventario">
       <table id="lista-productos">
@@ -49,35 +60,30 @@
         type="button"
         id="btn1"
         class="control-accion"
-        value="Eliminar Producto"
         onclick="eliminarProducto()"
       />
       <input
         type="button"
         id="btn2"
         class="control-accion"
-        value="Finalizar Venta"
         onclick="finalizarVenta()"
       />
       <input
         type="button"
         id="btn3"
         class="control-accion"
-        value="Cancelar Venta"
         onclick="solicitarCancelarVenta()"
       />
       <input
         type="button"
         id="btn4"
         class="control-accion"
-        value="Buscar Producto"
         onclick="abrirBuscarProducto()"
       />
       <input
         type="button"
         id="btn5"
         class="control-accion"
-        value="Ver Inventario"
         onclick="mostrarInventario()"
       />
     </div>

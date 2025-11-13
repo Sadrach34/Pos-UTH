@@ -1,6 +1,6 @@
 // Array de 100 productos con código, nombre y precio
 const productos = [
-  ["001", "Laptop HP", 899.99],
+  ["001", "aksdgahjkdLaptop HP", 899.99],
   ["002", "Mouse Logitech", 25.5],
   ["003", "Teclado Mecánico", 75.0],
   ["004", 'Monitor Samsung 24"', 189.99],
